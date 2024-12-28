@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sckoopy</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        :root{
+               color :rgba(0, 0, 0, 0.18);
+            }
+
+        body{
+            position: relative;
+            width: 100%;
+            background-color: rgba(174, 167, 167, 0.162);
+        }
+
+       
+      .navbar > .container
+      {
+        background-color: white;
+        width: 700px;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+        box-shadow: 2px 5px 5px gray;
+      }
+
+      #Posts > .container{
+        width: 700px;
+        padding: 0px;
+        
+      }
+
+      #Posts > .card {
+         width: 700px;
+      }
+
+      .Post{
+        margin-top: 11px;
+        margin-bottom: 11px;
+        box-shadow: 0px 4px 5px gray ;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px ;
+      }
+
+      .Post > .card-body{
+        padding-top: 0px;
+      }
+
+      .Post > .card{
+       font-weight: 600;
+      }
+
+      .Post-Info{
+          border-top: 1px solid gray;
+          padding-top: 7px;
+          margin-bottom: 16px;
+      }
+
+      .Post-Info > #Comment-img{
+        width: 15px;
+        height:15px;
+        display: inline;
+        text-align: center;
+        margin-right: 4px;
+       
+      }
+
+    .Post-Info > #Comments-num{
+        font-size: 15px;
+        font-weight: 450;
+        display: inline;
+    }
+
+      .img-profile{
+        width: 30px;
+        height: 30px;
+        border: 2px solid black;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #Post-time{
+        color: gray;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        font-size: 12px;
+        
+      }
+
+      .Post-Tag{
+        text-decoration: none;
+        font-size: 13px;
+        color:white;
+        background-color: gray;
+        border-radius: 20px;
+        padding: 2px 5px;
+        transition: color 0.2ms;
+      }
+
+       #Tag :hover {
+        color:  white !important;
+       }
+
+       .Post .img-profile, .user-name{
+        cursor: pointer;
+        font-weight: bold
+       }
+
+       #AddPost-btn{
+        width: 50px;
+        height: 50px;
+        font-size: 40px;
+        background-color: blue;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        position: fixed;
+        bottom:5%;
+        right: 5%;
+       }
+
+
+        #btn-Reg-close{
+            background-color: transparent;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border: none;
+        }
+
+        .card .user-name {
+          color: black;
+          text-decoration: none;
+        }
+
+        .comments{
+          border-top: solid 1px gray;
+          padding-top: 5px;
+        }
+
+        .comment{
+           padding: 2px 2px;
+           border-radius: 4px; 
+           margin-top: 2px;
+           margin-bottom: 2px;
+           background-color: rgba(179, 184, 185, 0.397)
+        }
+
+        .custom-alert {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1050;
+      min-width: 300px;
+    }
+
+    </style>
+</head>
+<body>
+      
+       <!--Reg Moddal-->
+       <div class="modal fade" id="RegisterModel" tabindex="-1" aria-labelledby="exampleModalLabel"  aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="Profile-img-Path" class="form-label">ProfileImage</label>
+                <input class="form-control" type="file" id="Profile-img-Path">
+              </div>
+              <label for="Reg-User-name">UserName</label>
+              <input id="Reg-User-name" class="mb-3" type="text">
+              <div class="mb-3">
+                <label for="Reg-email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="Reg-email" placeholder="name@example.com">
+              </div>
+              <label for="Reg-User-Password">Password</label>
+              <input id="Reg-User-Password" type="password">
+            </div>
+            <div class="modal-footer">
+              <button id="Reg-btn-cls" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button id="Reg-btn-Reg" type="button" class="btn btn-primary">Register</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!--Reg Moddal-->
+
+    <!--Log Moddal-->
+      <div class="modal fade" id="LoginModel" tabindex="-1" aria-labelledby="exampleModalLabe" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="Log-username" class="form-label">User Name</label>
+                    <input type="text" class="form-control" id="Log-username" placeholder="username">
+                  </div>
+                  <label for="Log-User-Password">Password</label>
+                  <input id="Log-User-Password" type="password" class="w-50">
+                </div>
+              <div class="modal-footer">
+              <button id="Log-btn-cls" type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+              <button id="Log-btn-Log" type="button" class="btn btn-primary">Login</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Log Moddal-->
+
+
+    <nav  class="navbar navbar-expand-lg navbar-light p-0 mb-4 ">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="Main.html">Sckoopy</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active fw-bold" aria-current="page" href="Main.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a id='Logged-User-Profile' class="nav-link fw-bold" href="#">Profile</a>
+              </li>
+            </ul>
+            <form id="Logged-div" class="d-flex">
+              <button id="Log-btn" class="btn btn-outline-success btn-sm me-2" type="button" data-bs-toggle="modal" data-bs-target="#LoginModel">Login</button>
+              <button id="Reg-btn" class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#RegisterModel" >Register</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+      <div id="Posts">
+        <div id="Posts-container" class="container">
+         
+
+
+        </div>    
+      </div>  
+
+
+
+       
+
+    <script src="GeneralMethod.js"></script>  
+    <script src="PostInfo.js"></script>
+</body>
+</html>
